@@ -197,7 +197,7 @@ const PieChart = createReactClass({
         const innerWidth = this._innerWidth;
         const innerHeight = this._innerHeight;
 
-        let pie = d3.layout.pie().value(e => y(e));
+        let pie = d3.pie().value(e => y(e));
 
         if (typeof sort !== 'undefined') {
             pie = pie.sort(sort);
@@ -216,15 +216,13 @@ const PieChart = createReactClass({
             labelRadius = radius * 0.9;
         }
 
-        const arc = d3.svg
-            .arc()
+        const arc = d3.arc()
             .innerRadius(innerRadius)
             .outerRadius(outerRadius)
             .padRadius(padRadius)
             .cornerRadius(cornerRadius);
 
-        const outerArc = d3.svg
-            .arc()
+        const outerArc = d3.arc()
             .innerRadius(labelRadius)
             .outerRadius(labelRadius);
 

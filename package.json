@@ -27,7 +27,7 @@
   },
   "dependencies": {
     "create-react-class": "^15.6.2",
-    "d3": "^3.5.3",
+    "d3": "^4.13.0",
     "prop-types": "^15.6.0"
   },
   "devDependencies": {

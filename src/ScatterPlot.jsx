@@ -120,7 +120,15 @@ const ScatterPlot = createReactClass({
         const xIntercept = this._xIntercept;
         const yIntercept = this._yIntercept;
 
-        let symbol = d3.svg.symbol().type(shape);
+        let symbol = /* TODO: JSFIX could not patch the breaking change:
+        4.0 introduces a new symbol type API. Symbol types are passed to symbol.type in place of strings. 
+        Suggested fix: To accommodate this change you have to change the string shape to the equivalent type from the new symbol type API:
+        “circle” ↦ d3.symbolCircle
+        “cross” ↦ d3.symbolCross
+        “diamond” ↦ d3.symbolDiamond
+        “square” ↦ d3.symbolSquare
+        “triangle-up” ↦ d3.symbolTriangle */
+        d3.symbol().type(shape);
 
         if (rScale) {
             symbol = symbol.size(rScale);

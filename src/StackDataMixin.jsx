@@ -26,13 +26,11 @@ const StackDataMixin = {
     _stackData(props) {
         const { offset, order, x, y, values } = props;
 
-        const stack = d3.layout
-            .stack()
+        const stack = d3.stack()
             .offset(offset)
             .order(order)
             .x(x)
-            .y(y)
-            .values(values);
+            .y(y).value(values);
 
         this._data = stack(this._data);
 

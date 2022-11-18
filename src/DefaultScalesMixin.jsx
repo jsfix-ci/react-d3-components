@@ -60,8 +60,7 @@ const DefaultScalesMixin = {
             Array.prototype.concat.apply([], extentsData)
         );
 
-        const scale = d3.scale
-            .linear()
+        const scale = d3.scaleLinear()
             .domain(extents)
             .range([0, this._innerWidth]);
 
@@ -74,8 +73,19 @@ const DefaultScalesMixin = {
     _makeOrdinalXScale(props) {
         const { x, values, barPadding } = props;
 
-        const scale = d3.scale
-            .ordinal()
+        const scale = /* TODO: JSFIX could not patch the breaking change:
+        The ordinal.rangeBands and ordinal.rangeRoundBands methods have been replaced with a new subclass of ordinal scale: band scales 
+        Suggested fix: The functionality of ordinal.rangeRoundBands() has been moved to the class of d3.scaleBand(). This means that instead of the constructor call `d3.scale.ordinal()` you now need `d3.scaleBand()`. This also means that instead of the .rangeRoundBands() method it’s now just called .rangeRound(). 
+        E.g.instead of the code:
+            `var x = d3.scale.ordinal()
+                .domain(["a", "b", "c"])
+                .rangeRoundBands([0, 100]);
+        you should now use 
+            `var x = d3.scaleBand()
+                .domain(["a", "b", "c"])
+                .rangeRound([0, 100]);
+        For information about the new .scaleBand() class see: https://devdocs.io/d3~4/d3-scale#scaleBand */
+        d3.scaleOrdinal()
             .domain(values(this._data[0]).map(e => x(e)))
             .rangeRoundBands([0, this._innerWidth], barPadding);
 
@@ -88,8 +98,7 @@ const DefaultScalesMixin = {
         const minDate = d3.min(values(this._data[0]), x);
         const maxDate = d3.max(values(this._data[0]), x);
 
-        const scale = d3.time
-            .scale()
+        const scale = d3.scaleTime()
             .domain([minDate, maxDate])
             .range([0, this._innerWidth]);
 
@@ -117,8 +126,7 @@ const DefaultScalesMixin = {
 
         extents = [d3.min([0, extents[0]]), extents[1]];
 
-        const scale = d3.scale
-            .linear()
+        const scale = d3.scaleLinear()
             .domain(extents)
             .range([this._innerHeight, 0]);
 
@@ -129,7 +137,7 @@ const DefaultScalesMixin = {
     },
 
     _makeOrdinalYScale() {
-        const scale = d3.scale.ordinal().range([this._innerHeight, 0]);
+        const scale = d3.scaleOrdinal().range([this._innerHeight, 0]);
 
         const yIntercept = scale(0);
 

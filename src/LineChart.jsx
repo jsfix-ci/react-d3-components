@@ -268,17 +268,29 @@ const LineChart = createReactClass({
         const xIntercept = this._xIntercept;
         const yIntercept = this._yIntercept;
 
-        const line = d3.svg
-            .line()
+        const line = /* TODO: JSFIX could not patch the breaking change:
+        line.curve and area.curve now take a function which instantiates a curve for a given context, rather than a string 
+        Suggested fix: Instead of interpolate you should now use the new equivalent functions found here:
+        https://github.com/d3/d3/blob/main/CHANGES.md#shapes-d3-shape. 
+        The functionality should be identical to the old version. For more information on each of the new methods see: 
+        https://github.com/d3/d3-shape/blob/main/README.md#curves  */
+        d3.line()
             .x(e => xScale(x(e)))
-            .y(e => yScale(y(e)))
-            .interpolate(interpolate)
+            .y(e => yScale(y(e))).curve(interpolate)
             .defined(defined);
 
         let tooltipSymbol = null,
             points = null;
         if (!this.state.tooltip.hidden) {
-            const symbol = d3.svg.symbol().type(shape);
+            const symbol = /* TODO: JSFIX could not patch the breaking change:
+            4.0 introduces a new symbol type API. Symbol types are passed to symbol.type in place of strings. 
+            Suggested fix: To accommodate this change you have to change the string shape to the equivalent type from the new symbol type API:
+            “circle” ↦ d3.symbolCircle
+            “cross” ↦ d3.symbolCross
+            “diamond” ↦ d3.symbolDiamond
+            “square” ↦ d3.symbolSquare
+            “triangle-up” ↦ d3.symbolTriangle */
+            d3.symbol().type(shape);
             const symbolColor = shapeColor
                 ? shapeColor
                 : colorScale(this._tooltipData.label);
@@ -297,7 +309,6 @@ const LineChart = createReactClass({
                     onMouseEnter={evt => this.onMouseEnter(evt, data)}
                     onMouseLeave={evt => this.onMouseLeave(evt)}
                 />
-            ;
         }
 
         if (showCustomLine) {
@@ -310,7 +321,15 @@ const LineChart = createReactClass({
                     <path
                         key={i}
                         className={lineStructureClassName}
-                        d={d3.svg.symbol().type(customPointShape)()}
+                        d={/* TODO: JSFIX could not patch the breaking change:
+                        4.0 introduces a new symbol type API. Symbol types are passed to symbol.type in place of strings. 
+                        Suggested fix: To accommodate this change you have to change the string customPointShape to the equivalent type from the new symbol type API:
+                        “circle” ↦ d3.symbolCircle
+                        “cross” ↦ d3.symbolCross
+                        “diamond” ↦ d3.symbolDiamond
+                        “square” ↦ d3.symbolSquare
+                        “triangle-up” ↦ d3.symbolTriangle */
+                        d3.symbol().type(customPointShape)()}
                         transform={translatePoints(p)}
                         fill={customPointColor}
                         onMouseEnter={evt => this.onMouseEnter(evt, data)}

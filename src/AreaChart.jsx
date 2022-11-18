@@ -74,7 +74,7 @@ const AreaChart = createReactClass({
     getDefaultProps() {
         return {
             interpolate: 'linear',
-            stroke: d3.scale.category20()
+            stroke: d3.scaleOrdinal(d3.category20)
         };
     },
 
@@ -160,18 +160,26 @@ const AreaChart = createReactClass({
         const xScale = this._xScale;
         const yScale = this._yScale;
 
-        const line = d3.svg
-            .line()
+        const line = /* TODO: JSFIX could not patch the breaking change:
+        line.curve and area.curve now take a function which instantiates a curve for a given context, rather than a string 
+        Suggested fix: Instead of interpolate you should now use the new equivalent functions found here:
+        https://github.com/d3/d3/blob/main/CHANGES.md#shapes-d3-shape. 
+        The functionality should be identical to the old version. For more information on each of the new methods see: 
+        https://github.com/d3/d3-shape/blob/main/README.md#curves  */
+        d3.line()
             .x(e => xScale(x(e)))
-            .y(e => yScale(y0(e) + y(e)))
-            .interpolate(interpolate);
+            .y(e => yScale(y0(e) + y(e))).curve(interpolate);
 
-        const area = d3.svg
-            .area()
+        const area = /* TODO: JSFIX could not patch the breaking change:
+        line.curve and area.curve now take a function which instantiates a curve for a given context, rather than a string 
+        Suggested fix: Instead of interpolate you should now use the new equivalent functions found here:
+        https://github.com/d3/d3/blob/main/CHANGES.md#shapes-d3-shape. 
+        The functionality should be identical to the old version. For more information on each of the new methods see: 
+        https://github.com/d3/d3-shape/blob/main/README.md#curves  */
+        d3.area()
             .x(e => xScale(x(e)))
             .y0(e => yScale(yScale.domain()[0] + y0(e)))
-            .y1(e => yScale(y0(e) + y(e)))
-            .interpolate(interpolate);
+            .y1(e => yScale(y0(e) + y(e))).curve(interpolate);
 
         return (
             <div>
